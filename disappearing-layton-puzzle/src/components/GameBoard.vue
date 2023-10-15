@@ -1,10 +1,22 @@
 <template>
   <div class="chessboard">
-    <div v-for="row in 7" :key="row" class="row">
-      <div v-for="col in 7" :key="col" class="square" :class="{ dark: isDarkSquare(row, col) }">
-        <!-- {{ getPiece(row, col) }} -->
-        <img :src="getPieceImage()" alt="Chess Piece" draggable="false"/>
-
+    <div v-for="(row, rowIndex) in board" :key="rowIndex" class="row">
+      <div
+        v-for="(piece, colIndex) in row"
+        :key="colIndex"
+        class="square"
+        :class="{ dark: (rowIndex + colIndex) % 2 === 1 }"
+        @dragover.prevent
+        @drop="handleDrop(rowIndex, colIndex)"
+      >
+        <div
+          v-if="piece"
+          class="piece"
+          draggable="true"
+          @dragstart="handleDragStart(rowIndex, colIndex)"
+        >
+          {{ piece }}
+        </div>
       </div>
     </div>
   </div>
@@ -12,20 +24,36 @@
 
 <script>
 export default {
+  data() {
+    return {
+      board: [
+        ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+        ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+        Array(8).fill(null),
+        Array(8).fill(null),
+        Array(8).fill(null),
+        Array(8).fill(null),
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+      ],
+      selectedPiece: null,
+      selectedPiecePosition: null
+    };
+  },
   methods: {
-    isDarkSquare(row, col) {
-      return (row + col) % 2 === 1;
+    handleDragStart(rowIndex, colIndex) {
+      if (this.board[rowIndex][colIndex]) {
+        this.selectedPiece = this.board[rowIndex][colIndex];
+        this.selectedPiecePosition = { rowIndex, colIndex };
+      }
     },
-    getPiece(row, col) {
-      // Return a piece for demonstration (use your own piece representation)
-      // For simplicity, we'll use the same piece for every square
-      // val a = row + col;
-      return row + col + '♛'; // Queen (Unicode representation)
-    },
-    getPieceImage() {
-      // Return the image URL for a piece (use your own piece representation)
-      // For simplicity, we'll use the same image for every square
-      return require('@/assets/logo.png'); // Adjust the path and piece image names accordingly
+    handleDrop(rowIndex, colIndex) {
+      if (this.selectedPiece) {
+        this.board[rowIndex].splice(colIndex, 1, this.selectedPiece);
+        this.board[this.selectedPiecePosition.rowIndex].splice(this.selectedPiecePosition.colIndex, 1, null);
+        this.selectedPiece = null;
+        this.selectedPiecePosition = null;
+      }
     }
   }
 };
@@ -33,38 +61,34 @@ export default {
 
 <style scoped>
 .chessboard {
-  display: grid;
-  grid-template-columns: repeat(8, 50px);
-  grid-template-rows: repeat(8, 50px);
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
 }
 
 .square {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 24px;
   width: 50px;
   height: 50px;
-  user-select: none; /* Disable text selection for the square */
-}
-
-.square img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  user-select: none; /* Disable text selection for the image */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #000;
 }
 
 .dark {
-  background-color: gray;
-  color: white;
+  background-color: #b58863;
 }
 
-.chessboard::before {
-  content: '';
-  width: 0;
-  padding-bottom: 100%;
-  grid-row: 1 / 1;
-  grid-column: 1 / 1;
+.piece {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  user-select: none;
 }
 </style>

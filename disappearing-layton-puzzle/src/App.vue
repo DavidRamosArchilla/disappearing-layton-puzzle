@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Connect-4 Game</h1>
-    <GameBoard :board="board" @drop="dropPiece" />
+    <GameBoard />
   </div>
 </template>
 
