@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     getInitalBoard(){
-      const sample = require('@/puzzles/puzzle_1.json'); 
+      const sample = require('@/puzzles/puzzle_2.json'); 
       var puzzle = sample.board;
       // replace -1 by nullS
       puzzle = puzzle.map(arr => arr.map(item => item === -1 ? null : item))
@@ -46,10 +46,7 @@ export default {
     },
     getPieceImage(piece){
       if(piece === 1)
-        return require('@/assets/logo.png');
-      // else
-      //   return require('@/assets/back.png');
-      
+        return require('@/assets/ball.png');
     },
     handleDragStart(event, rowIndex, colIndex) {
       if (this.board[rowIndex][colIndex]) {
@@ -61,12 +58,44 @@ export default {
       }
     },
     handleDrop(rowIndex, colIndex) {
-      if (this.selectedPiece && (this.board[rowIndex][colIndex] != null)) {
+      if(
+          this.selectedPiece &&
+          this.isValidSquare(rowIndex, colIndex)
+        ) {
         this.board[rowIndex].splice(colIndex, 1, this.selectedPiece);
         this.board[this.selectedPiecePosition.rowIndex].splice(this.selectedPiecePosition.colIndex, 1, 0);
         this.selectedPiece = null;
         this.selectedPiecePosition = null;
       }
+    },
+    isValidSquare(rowIndex, colIndex){
+      return this.board[rowIndex][colIndex] !== null &&
+          (rowIndex !== this.selectedPiecePosition.rowIndex || 
+          colIndex !== this.selectedPiecePosition.colIndex) &&
+          this.thereIsBallBetween(rowIndex, colIndex);
+    },
+    // if there is a ball, this method will call the method removeBall to remove it
+    thereIsBallBetween(rowIndex, colIndex){
+      if (Math.abs(this.selectedPiecePosition.rowIndex - rowIndex) === 2 &&
+          this.selectedPiecePosition.colIndex - colIndex === 0) {
+        const betweenRow = Math.max(this.selectedPiecePosition.rowIndex, rowIndex) - 1;
+        if(this.board[betweenRow][colIndex] === 1){
+          this.removeBall(betweenRow, colIndex)
+          return true;
+        }
+      }
+      else if(this.selectedPiecePosition.rowIndex - rowIndex === 0 &&
+        Math.abs(this.selectedPiecePosition.colIndex - colIndex) === 2){
+        const betweenCol = Math.max(this.selectedPiecePosition.colIndex, colIndex) - 1;
+        if(this.board[rowIndex][betweenCol] === 1){
+          this.removeBall(rowIndex, betweenCol)
+          return true;
+        }
+      }
+      return false;
+    },
+    removeBall(rowIndex, colIndex){
+      this.board[rowIndex][colIndex] = 0;
     }
   }
 };
@@ -98,10 +127,10 @@ export default {
 
 .square img {
   position: absolute; /* Position the img relative to its parent .example-class */
-  top: 0;
-  left: 0;
-  width: 100%; /* Ensure the image fills the square */
-  height: 100%; /* Ensure the image fills the square */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 75%; /* Ensure the image fills the square */
   object-fit: contain; /* Maintain the aspect ratio while fitting */
 }
 
