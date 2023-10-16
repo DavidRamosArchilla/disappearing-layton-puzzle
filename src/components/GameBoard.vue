@@ -40,17 +40,8 @@ export default {
     getInitalBoard(){
       const sample = require('@/puzzles/puzzle_1.json'); 
       var puzzle = sample.board;
+      // replace -1 by nullS
       puzzle = puzzle.map(arr => arr.map(item => item === -1 ? null : item))
-      // return [
-      //   ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
-      //   ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-      //   Array(8).fill(null),
-      //   Array(8).fill(null),
-      //   Array(8).fill(null),
-      //   Array(8).fill(null),
-      //   ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-      //   ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
-      // ];
       return puzzle;
     },
     getPieceImage(piece){
@@ -85,6 +76,8 @@ export default {
 .chessboard {
   display: flex;
   flex-direction: column;
+  max-width: 600px; /* Set a max width for the chessboard if needed */
+  margin: 0 auto; /* Center the chessboard */
 }
 
 .row {
@@ -92,25 +85,25 @@ export default {
 }
 
 .square {
-  width: 50px;
-  height: 50px;
+  width: 14.28%; /* Adjust the square size based on the board size */
+  height: 14.28%;
+  padding-top: 14.28%;
+  padding-left: 14.28%;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* border: 1px solid #000;
-   background-image: url('@/assets/back.png');
-  background-size: cover; */
+  user-select: none;
 }
 
 .square img {
+  position: absolute; /* Position the img relative to its parent .example-class */
+  top: 0;
+  left: 0;
   width: 100%; /* Ensure the image fills the square */
   height: 100%; /* Ensure the image fills the square */
   object-fit: contain; /* Maintain the aspect ratio while fitting */
 }
-
-/*.dark {
-  background-color: #b58863;
-}*/
 
 .non_empty{
   background-image: url('@/assets/back.png');
