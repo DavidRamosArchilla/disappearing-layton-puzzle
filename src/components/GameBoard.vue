@@ -1,5 +1,5 @@
 <template>
-  <div class="chessboard">
+  <div class="gameboard">
     <div v-for="(row, rowIndex) in board" :key="rowIndex" class="row">
       <div
         v-for="(piece, colIndex) in row"
@@ -16,7 +16,6 @@
           draggable="true"
           @dragstart="handleDragStart($event, rowIndex, colIndex)"
         >
-          <!-- {{ piece }} -->
           <img
             :src="getPieceImage(piece)"
             alt="Piece"
@@ -69,7 +68,7 @@ export default {
       }
     },
     isValidSquare(rowIndex, colIndex){
-      return this.board[rowIndex][colIndex] !== null &&
+      return this.board[rowIndex][colIndex] !== 1 &&
           (rowIndex !== this.selectedPiecePosition.rowIndex || 
           colIndex !== this.selectedPiecePosition.colIndex) &&
           this.thereIsBallBetween(rowIndex, colIndex);
@@ -96,17 +95,27 @@ export default {
     },
     removeBall(rowIndex, colIndex){
       this.board[rowIndex][colIndex] = 0;
+    },
+    resetBoard(){
+      this.board = this.getInitalBoard()
     }
   }
 };
 </script>
 
 <style scoped>
-.chessboard {
+.gameboard {
   display: flex;
   flex-direction: column;
-  max-width: 600px; /* Set a max width for the chessboard if needed */
-  margin: 0 auto; /* Center the chessboard */
+  height: 100%;
+  max-width: 350px; /* Set a max width for the board if needed */
+  margin: 0 auto; /* Center the board */
+  /*margin-top: 20px;*/
+  background-image: url('@/assets/background_table_square.png');
+  background-size: cover;
+  background-position: center;
+  padding: 10%;
+  opacity: 1;
 }
 
 .row {
@@ -114,7 +123,7 @@ export default {
 }
 
 .square {
-  width: 14.28%; /* Adjust the square size based on the board size */
+  width: 14.28%; /* Adjust the square size based on the board size --> 1/7 */
   height: 14.28%;
   padding-top: 14.28%;
   padding-left: 14.28%;
@@ -123,6 +132,7 @@ export default {
   align-items: center;
   justify-content: center;
   user-select: none;
+  
 }
 
 .square img {
@@ -130,12 +140,12 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 75%; /* Ensure the image fills the square */
+  width: 100%; /* Ensure the image fills the square */
   object-fit: contain; /* Maintain the aspect ratio while fitting */
 }
 
 .non_empty{
-  background-image: url('@/assets/back.png');
+  background-image: url('@/assets/background_square.png');
   background-size: cover; 
 }
 
