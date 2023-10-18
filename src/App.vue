@@ -54,7 +54,7 @@ export default {
         { label: 'Puzzle 2', value: '2' },
         { label: 'Puzzle 3', value: '3' }
       ],
-      selectedOption: 1,
+      selectedOption: { label: 'Puzzle 1', value: '1' },
     };
   },
   computed: {
@@ -86,6 +86,7 @@ export default {
     handleGameOver() {
       this.isGameOver = true;
       console.log(this.isGameOver);
+      console.log(this.selectedOption.value);
     }
   }
 };

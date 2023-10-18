@@ -65,8 +65,15 @@ export default {
         this.board[this.selectedPiecePosition.rowIndex].splice(this.selectedPiecePosition.colIndex, 1, 0);
         this.selectedPiece = null;
         this.selectedPiecePosition = null;
-        this.announceGameOver();
+        // this.announceGameOver();
+        if (this.isGameOver()){
+          this.announceGameOver();
+        }
       }
+    },
+    isGameOver(){
+      const countOnes = arr => arr.flat().filter(element => element === 1).length;
+      return countOnes(this.board) === 1;
     },
     isValidSquare(rowIndex, colIndex){
       return this.board[rowIndex][colIndex] !== 1 &&
