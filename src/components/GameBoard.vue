@@ -65,6 +65,7 @@ export default {
         this.board[this.selectedPiecePosition.rowIndex].splice(this.selectedPiecePosition.colIndex, 1, 0);
         this.selectedPiece = null;
         this.selectedPiecePosition = null;
+        this.announceGameOver();
       }
     },
     isValidSquare(rowIndex, colIndex){
@@ -98,6 +99,9 @@ export default {
     },
     resetBoard(){
       this.board = this.getInitalBoard()
+    },
+    announceGameOver() {
+      this.$emit('gameOver');
     }
   }
 };
@@ -108,7 +112,7 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-width: 350px; /* Set a max width for the board if needed */
+  max-width: 400px; /* Set a max width for the board if needed */
   margin: 0 auto; /* Center the board */
   /*margin-top: 20px;*/
   background-image: url('@/assets/background_table_square.png');
