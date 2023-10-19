@@ -30,14 +30,28 @@
 export default {
   data() {
     return {
+      idToPuzzle: {
+        1: "puzzle_1.json",
+        2: "puzzle_2.json",
+        3: "puzzle_1.json",
+      },
       board: this.getInitalBoard(),
       selectedPiece: null,
-      selectedPiecePosition: null
+      selectedPiecePosition: null,
     };
+  },
+  props: {
+    puzzleId: {
+      type: Number, // Specify the type of the prop
+      required: true // Make the prop required (optional)
+    }
   },
   methods: {
     getInitalBoard(){
-      const sample = require('@/puzzles/puzzle_2.json'); 
+      console.log(this.puzzleId);
+      console.log(this.idToPuzzle);
+      // const puzzleFile = this.idToPuzzle[this.puzzleId];
+      const sample = require('@/puzzles/puzzle_' + this.puzzleId + '.json'); 
       var puzzle = sample.board;
       // replace -1 by nullS
       puzzle = puzzle.map(arr => arr.map(item => item === -1 ? null : item))
@@ -65,7 +79,8 @@ export default {
         this.board[this.selectedPiecePosition.rowIndex].splice(this.selectedPiecePosition.colIndex, 1, 0);
         this.selectedPiece = null;
         this.selectedPiecePosition = null;
-        // this.announceGameOver();
+        console.log(this.puzzleId);
+        console.log(this.board);
         if (this.isGameOver()){
           this.announceGameOver();
         }

@@ -6,12 +6,7 @@
                 Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
             </p>
         </Dialog>
-    <div class="left-side" :style="backgroundStyle">
-      <div class="content">
-        <GameBoard ref="gameBoard" @gameOver="handleGameOver"/>
-      </div>
-    </div>
-    <div class="right-side">
+    <div class="left-side" >
       <div class="image-container">
         <img src="@/assets/layton_sign.png" alt="Image" class="sign"/>
       </div>
@@ -24,6 +19,12 @@
       <div class="buttons_container">
         <Button label="Reset board" @click="resetBoard" :style="{ backgroundColor: '#3e61a3', color: '#fff', marginRight: '10px' }" class="p-mr-2"/>
         <Dropdown class="puzzle_selector" :options="dropdownOptions" v-model="selectedOption" optionLabel="label" placeholder="Puzzle 1"/>
+      </div>
+    </div>
+    <div class="right-side" :style="backgroundStyle">
+      
+      <div class="content">
+        <GameBoard ref="gameBoard" @gameOver="handleGameOver" :puzzleId="selectedOption.value"/>
       </div>
     </div>
   </div>
@@ -50,16 +51,16 @@ export default {
       isGameOver: false,
       scrollPosition: 0,
       dropdownOptions: [
-        { label: 'Puzzle 1', value: '1' },
-        { label: 'Puzzle 2', value: '2' },
-        { label: 'Puzzle 3', value: '3' }
+        { label: 'Puzzle 1', value: 1 },
+        { label: 'Puzzle 2', value: 2 },
+        { label: 'Puzzle 3', value: 3 }
       ],
-      selectedOption: { label: 'Puzzle 1', value: '1' },
+      selectedOption: { label: 'Puzzle 1', value: 1 },
     };
   },
   computed: {
     backgroundStyle() {
-      const backgroundYPosition = `calc(-${this.scrollPosition}px / 7)`;
+      const backgroundYPosition = `calc(-${this.scrollPosition}px / 5)`;
       return {
         background: `url('long_layton_background_2.jpg') no-repeat center ${backgroundYPosition}`,
         backgroundSize: 'cover',
@@ -102,18 +103,7 @@ export default {
 }
 
 .left-side {
-  width: 50%;
-  /*float: left;*/
-  position: relative;
-}
-
-.content {
-  position: absolute;
-  top: 40%;
-  width: 100%;
-}
-
-.right-side {
+  
   width: 50%;
   /*float: right;*/
   flex-wrap: wrap;
@@ -124,6 +114,18 @@ export default {
   align-items: top;
 }
 
+.content {
+  position: absolute;
+  top: 40%;
+  width: 100%;
+}
+
+.right-side {
+  width: 50%;
+  /*float: left;*/
+  position: relative;
+}
+
 .sign {
   width: 100%; /* Make the image responsive */
   height: auto;
@@ -132,6 +134,20 @@ export default {
 
 .button_reset{
   background-color: #3e61a3;
+}
+
+@media (max-width: 768px) {
+  .container {
+   display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .left-side,
+  .right-side {
+    width: 100%; /* Make both sides take the full width of the container */
+    height: 100vh;
+  }
 }
 
 </style>
