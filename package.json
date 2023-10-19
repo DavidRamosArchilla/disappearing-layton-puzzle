@@ -7,6 +7,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
+  "homepage": "https://DavidRamosArchilla.github.io/disappearing-layton-puzzle/",
   "dependencies": {
     "core-js": "^3.8.3",
     "primevue": "^3.37.0",
