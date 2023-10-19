@@ -1,20 +1,31 @@
 <template>
   <div class="container">
     <Dialog v-model:visible="isGameOver" position="top" modal header="Well Done!" :style="{ width: '50vw' }">
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
-        </Dialog>
+      <p>
+        You have solved the puzzle! Now, you can try to solve the rest of the puzzles, good luck with them.
+      </p>
+    </Dialog>
     <div class="left-side" >
       <div class="image-container">
         <img src="@/assets/layton_sign.png" alt="Image" class="sign"/>
       </div>
-      <div>
-        <h2>Rules: </h2>
+      <div class="rules">
+        <h2>How to play </h2>
         <p>
-           Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas "Letraset", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum.
+          The rules are simple--you can move any ball on the board below as long as it satisfies the following conditions:
         </p>
+        <ul>
+          <li>
+            To move, jump your selected ball over an adjacent space occupied by another ball into an empty space on the other side. You can't jump diagonally.
+          </li>
+          <li>
+            Once you've made the jump, the ball you jumped over disappears from the board.
+          </li>
+          <li>
+            To complete the puzzle, you must remove all balls from the board except for one.
+          </li>
+        </ul>
+        <p>OK, enough rules. Try for yourself!</p>  
       </div>
       <div class="buttons_container">
         <Button label="Reset board" @click="resetBoard" :style="{ backgroundColor: '#3e61a3', color: '#fff', marginRight: '10px' }" class="p-mr-2"/>
@@ -28,8 +39,11 @@
       </div>
     </div>
   </div>
-  <p> Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas "Letraset", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum.
-    </p>
+  <footer>
+    <div class="footer-content">
+      <p>See this project on <a href="https://github.com/DavidRamosArchilla/disappearing-layton-puzzle" target="_blank">GitHub</a></p>
+    </div>
+  </footer>
 </template>
 
 <script>
@@ -53,7 +67,10 @@ export default {
       dropdownOptions: [
         { label: 'Puzzle 1', value: 1 },
         { label: 'Puzzle 2', value: 2 },
-        { label: 'Puzzle 3', value: 3 }
+        { label: 'Puzzle 3', value: 3 },
+        { label: 'Puzzle 4', value: 4 },
+        { label: 'Puzzle 5', value: 5 },
+        { label: 'Puzzle 6', value: 6 },
       ],
       selectedOption: { label: 'Puzzle 1', value: 1 },
     };
@@ -62,7 +79,7 @@ export default {
     backgroundStyle() {
       const backgroundYPosition = `calc(-${this.scrollPosition}px / 5)`;
       return {
-        background: `url('long_layton_background_2.jpg') no-repeat center ${backgroundYPosition}`,
+        background: `url('layton_background.jpg') no-repeat center ${backgroundYPosition}`,
         backgroundSize: 'cover',
         // "background-size": "80%",
         // opacity: 0.5
@@ -71,7 +88,6 @@ export default {
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll);
-    console.log(this.isGameOver);
   },
   beforeUnmount() {
     window.removeEventListener('scroll', this.handleScroll);
@@ -86,8 +102,6 @@ export default {
     },
     handleGameOver() {
       this.isGameOver = true;
-      console.log(this.isGameOver);
-      console.log(this.selectedOption.value);
     }
   }
 };
@@ -99,19 +113,17 @@ export default {
 .container{
   display: flex;
   min-height: 150vh;
-  background-color: #4f300d;
+  padding-bottom: -105%;
+  background-color: #4f483b;
 }
 
 .left-side {
-  
   width: 50%;
-  /*float: right;*/
-  flex-wrap: wrap;
-  flex-flow: col wrap;
+  flex-direction: column; /* Stack items vertically */
   color: #f9e3ba;
   display: flex;
-  justify-content: center;
-  align-items: top;
+  justify-content: flex-start; /* Align items to the top of the container */
+  align-items: center;
 }
 
 .content {
@@ -122,12 +134,11 @@ export default {
 
 .right-side {
   width: 50%;
-  /*float: left;*/
   position: relative;
 }
 
 .sign {
-  width: 100%; /* Make the image responsive */
+  width: 100%;
   height: auto;
   margin-top: 100px;
 }
@@ -145,9 +156,34 @@ export default {
 
   .left-side,
   .right-side {
-    width: 100%; /* Make both sides take the full width of the container */
+    width: 100%;
     height: 100vh;
   }
 }
 
+.rules{
+  margin: 40px 20px 0 20px;
+}
+
+.buttons_container{
+  margin-top: 40px;
+}
+
+footer {
+  background-color: #2f2b23;
+  color: #f9e3ba;
+  text-align: center;
+  padding: 10px 0;
+}
+
+/* Style the link in the footer */
+footer a {
+  color: #f9e3ba;
+  text-decoration: none;
+}
+
+/* On hover, change the color of the link */
+footer a:hover {
+  color: #958870;
+}
 </style>

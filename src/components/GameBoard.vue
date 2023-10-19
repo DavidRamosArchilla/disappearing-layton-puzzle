@@ -30,11 +30,6 @@
 export default {
   data() {
     return {
-      idToPuzzle: {
-        1: "puzzle_1.json",
-        2: "puzzle_2.json",
-        3: "puzzle_1.json",
-      },
       board: this.getInitalBoard(),
       selectedPiece: null,
       selectedPiecePosition: null,
@@ -42,15 +37,12 @@ export default {
   },
   props: {
     puzzleId: {
-      type: Number, // Specify the type of the prop
-      required: true // Make the prop required (optional)
+      type: Number,
+      required: true 
     }
   },
   methods: {
     getInitalBoard(){
-      console.log(this.puzzleId);
-      console.log(this.idToPuzzle);
-      // const puzzleFile = this.idToPuzzle[this.puzzleId];
       const sample = require('@/puzzles/puzzle_' + this.puzzleId + '.json'); 
       var puzzle = sample.board;
       // replace -1 by nullS
@@ -65,7 +57,7 @@ export default {
       if (this.board[rowIndex][colIndex]) {
         this.selectedPiece = this.board[rowIndex][colIndex];
         this.selectedPiecePosition = { rowIndex, colIndex };
-        event.dataTransfer.effectAllowed = 'move'; // Specify the effect
+        event.dataTransfer.effectAllowed = 'move';
         event.dataTransfer.setData('text/plain', ''); // Necessary for Firefox
         // event.preventDefault(); // Prevent the default behavior
       }
@@ -79,8 +71,6 @@ export default {
         this.board[this.selectedPiecePosition.rowIndex].splice(this.selectedPiecePosition.colIndex, 1, 0);
         this.selectedPiece = null;
         this.selectedPiecePosition = null;
-        console.log(this.puzzleId);
-        console.log(this.board);
         if (this.isGameOver()){
           this.announceGameOver();
         }
@@ -125,7 +115,15 @@ export default {
     announceGameOver() {
       this.$emit('gameOver');
     }
-  }
+  },
+  watch: {
+    puzzleId: {
+      immediate: true,
+      handler() {
+        this.board = this.getInitalBoard();
+      },
+    },
+  },
 };
 </script>
 
@@ -134,9 +132,8 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-width: 400px; /* Set a max width for the board if needed */
+  max-width: 400px;
   margin: 0 auto; /* Center the board */
-  /*margin-top: 20px;*/
   background-image: url('@/assets/background_table_square.png');
   background-size: cover;
   background-position: center;
@@ -162,11 +159,11 @@ export default {
 }
 
 .square img {
-  position: absolute; /* Position the img relative to its parent .example-class */
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100%; /* Ensure the image fills the square */
+  width: 100%;
   object-fit: contain; /* Maintain the aspect ratio while fitting */
 }
 
