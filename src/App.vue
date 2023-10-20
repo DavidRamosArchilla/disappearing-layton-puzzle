@@ -79,7 +79,7 @@ export default {
     backgroundStyle() {
       const backgroundYPosition = `calc(-${this.scrollPosition}px / 5)`;
       return {
-        background: `url('layton_background.jpg') no-repeat center ${backgroundYPosition}`,
+        background: `url('layton_background.png') no-repeat center ${backgroundYPosition}`,
         backgroundSize: 'cover',
         // "background-size": "80%",
         // opacity: 0.5

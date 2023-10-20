@@ -14,12 +14,21 @@
           v-if="piece === 1"
           class="piece"
           draggable="true"
+          @click="handleClickOnBall(rowIndex, colIndex)"
           @dragstart="handleDragStart($event, rowIndex, colIndex)"
         >
           <img
             :src="getPieceImage(piece)"
             alt="Piece"
           />
+        </div>
+        <div
+          v-if="piece === 2"
+          class="piece"
+          draggable="false"
+          @click="handleClickOnTargetSquare(rowIndex, colIndex)"
+        >
+          <div class="gray-circle"></div>
         </div>
       </div>
     </div>
@@ -31,8 +40,16 @@ export default {
   data() {
     return {
       board: this.getInitalBoard(),
+      /*
+      in board:
+      -1 or null means no square
+      0 means empty square
+      1 means ther is a ball in square
+      2 means highlighted square
+      */
       selectedPiece: null,
       selectedPiecePosition: null,
+      ballToRemove: null,
     };
   },
   props: {
@@ -71,28 +88,35 @@ export default {
         this.board[this.selectedPiecePosition.rowIndex].splice(this.selectedPiecePosition.colIndex, 1, 0);
         this.selectedPiece = null;
         this.selectedPiecePosition = null;
+        this.removeBall(this.ballToRemove.rowIndex, this.ballToRemove.colIndex);
         if (this.isGameOver()){
           this.announceGameOver();
         }
       }
+    },
+    handleClickOnBall(rowIndex, colIndex){
+      console.log(rowIndex, colIndex);
+      // this.board[rowIndex][colIndex + 2] = 2;
+      // thereIsBallBetween(rowIndex, colIndex)
+
     },
     isGameOver(){
       const countOnes = arr => arr.flat().filter(element => element === 1).length;
       return countOnes(this.board) === 1;
     },
     isValidSquare(rowIndex, colIndex){
-      return this.board[rowIndex][colIndex] !== 1 &&
+      return this.board[rowIndex][colIndex] === 0 &&
           (rowIndex !== this.selectedPiecePosition.rowIndex || 
           colIndex !== this.selectedPiecePosition.colIndex) &&
           this.thereIsBallBetween(rowIndex, colIndex);
     },
-    // if there is a ball, this method will call the method removeBall to remove it
+    // if there is a ball, this method will update the variable ballToRemove and the drophandler will delete the ball
     thereIsBallBetween(rowIndex, colIndex){
       if (Math.abs(this.selectedPiecePosition.rowIndex - rowIndex) === 2 &&
           this.selectedPiecePosition.colIndex - colIndex === 0) {
         const betweenRow = Math.max(this.selectedPiecePosition.rowIndex, rowIndex) - 1;
         if(this.board[betweenRow][colIndex] === 1){
-          this.removeBall(betweenRow, colIndex)
+          this.ballToRemove = { "rowIndex": betweenRow, "colIndex": colIndex };
           return true;
         }
       }
@@ -100,7 +124,7 @@ export default {
         Math.abs(this.selectedPiecePosition.colIndex - colIndex) === 2){
         const betweenCol = Math.max(this.selectedPiecePosition.colIndex, colIndex) - 1;
         if(this.board[rowIndex][betweenCol] === 1){
-          this.removeBall(rowIndex, betweenCol)
+          this.ballToRemove = { "rowIndex": rowIndex, "colIndex": betweenCol };
           return true;
         }
       }
@@ -155,7 +179,6 @@ export default {
   align-items: center;
   justify-content: center;
   user-select: none;
-  
 }
 
 .square img {
@@ -178,7 +201,18 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
   user-select: none;
+}
+
+.gray-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%; 
+  height:60%;
+  background-color: #325185; /*#325185*/
+  border-radius: 50%; 
+  opacity:0.75
 }
 </style>
