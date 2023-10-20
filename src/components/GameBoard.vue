@@ -26,7 +26,7 @@
           v-if="piece === 2"
           class="piece"
           draggable="false"
-          @click="handleClickOnTargetSquare(rowIndex, colIndex)"
+          @click="handleBallMoved(rowIndex, colIndex)"
         >
           <div class="gray-circle"></div>
         </div>
@@ -84,28 +84,50 @@ export default {
           this.selectedPiece &&
           this.isValidSquare(rowIndex, colIndex)
         ) {
-        this.board[rowIndex].splice(colIndex, 1, this.selectedPiece);
-        this.board[this.selectedPiecePosition.rowIndex].splice(this.selectedPiecePosition.colIndex, 1, 0);
-        this.selectedPiece = null;
-        this.selectedPiecePosition = null;
-        this.removeBall(this.ballToRemove.rowIndex, this.ballToRemove.colIndex);
-        if (this.isGameOver()){
-          this.announceGameOver();
-        }
+        this.handleBallMoved(rowIndex, colIndex);
       }
     },
     handleClickOnBall(rowIndex, colIndex){
-      console.log(rowIndex, colIndex);
-      // this.board[rowIndex][colIndex + 2] = 2;
-      // thereIsBallBetween(rowIndex, colIndex)
-
+      this.selectedPiece = this.board[rowIndex][colIndex];
+      this.selectedPiecePosition = { rowIndex, colIndex };
+      this.removeHighlightedSquares();
+      if (this.isValidClickableSquare(rowIndex + 2, colIndex))
+        this.board[rowIndex + 2][colIndex] = 2;
+      if (this.isValidClickableSquare(rowIndex, colIndex + 2))
+        this.board[rowIndex][colIndex + 2] = 2;
+      if (this.isValidClickableSquare(rowIndex - 2, colIndex))
+        this.board[rowIndex - 2][colIndex] = 2;
+      if (this.isValidClickableSquare(rowIndex, colIndex - 2))
+        this.board[rowIndex][colIndex - 2] = 2;
+    },
+    handleBallMoved(rowIndex, colIndex){
+      this.board[rowIndex][colIndex] = 1;
+      this.board[this.selectedPiecePosition.rowIndex][this.selectedPiecePosition.colIndex] = 0;
+      this.selectedPiece = null;
+      this.selectedPiecePosition = null;
+      this.removeBall(this.ballToRemove.rowIndex, this.ballToRemove.colIndex);
+      this.removeHighlightedSquares();
+      if (this.isGameOver()){
+          this.announceGameOver();
+      }
+    },
+    isValidClickableSquare(rowIndex, colIndex){
+      return (rowIndex < this.board.length) &&
+      (rowIndex >= 0) &&
+      (rowIndex < this.board[rowIndex].length) &&
+      (colIndex >= 0) && 
+      this.board[rowIndex][colIndex] === 0 &&
+      this.thereIsBallBetween(rowIndex, colIndex);
+    },
+    removeHighlightedSquares(){
+      this.board = this.board.map(row => row.map(element => element === 2 ? 0 : element));
     },
     isGameOver(){
       const countOnes = arr => arr.flat().filter(element => element === 1).length;
       return countOnes(this.board) === 1;
     },
     isValidSquare(rowIndex, colIndex){
-      return this.board[rowIndex][colIndex] === 0 &&
+      return (this.board[rowIndex][colIndex] === 0 || this.board[rowIndex][colIndex] === 2) &&
           (rowIndex !== this.selectedPiecePosition.rowIndex || 
           colIndex !== this.selectedPiecePosition.colIndex) &&
           this.thereIsBallBetween(rowIndex, colIndex);
@@ -156,7 +178,7 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-width: 400px;
+  max-width: 75%;
   margin: 0 auto; /* Center the board */
   background-image: url('@/assets/background_table_square.png');
   background-size: cover;
