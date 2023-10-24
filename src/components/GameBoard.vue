@@ -81,8 +81,7 @@ export default {
     },
     handleDrop(rowIndex, colIndex) {
       if(
-          this.selectedPiece &&
-          this.isValidSquare(rowIndex, colIndex)
+          this.selectedPiece 
         ) {
         this.handleBallMoved(rowIndex, colIndex);
       }
@@ -101,14 +100,16 @@ export default {
         this.board[rowIndex][colIndex - 2] = 2;
     },
     handleBallMoved(rowIndex, colIndex){
-      this.board[rowIndex][colIndex] = 1;
-      this.board[this.selectedPiecePosition.rowIndex][this.selectedPiecePosition.colIndex] = 0;
-      this.selectedPiece = null;
-      this.selectedPiecePosition = null;
-      this.removeBall(this.ballToRemove.rowIndex, this.ballToRemove.colIndex);
-      this.removeHighlightedSquares();
-      if (this.isGameOver()){
-          this.announceGameOver();
+      if (this.isValidSquare(rowIndex, colIndex)){
+        this.board[rowIndex][colIndex] = 1;
+        this.board[this.selectedPiecePosition.rowIndex][this.selectedPiecePosition.colIndex] = 0;
+        this.selectedPiece = null;
+        this.selectedPiecePosition = null;
+        this.removeBall(this.ballToRemove.rowIndex, this.ballToRemove.colIndex);
+        this.removeHighlightedSquares();
+        if (this.isGameOver()){
+            this.announceGameOver();
+        }
       }
     },
     isValidClickableSquare(rowIndex, colIndex){
